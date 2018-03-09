@@ -11,7 +11,7 @@ class Chain {
     }
 
     createGenesisBlock() {
-        return new Block(0, 0, new Date(), GLOBAL.GENESIS_BLOCK);
+        return new Block(0, 0, new Date(), GLOBAL.GENESIS_BLOCK_DESCRIPTION);
     }
 
     getLastBlock() {
