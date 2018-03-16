@@ -1,9 +1,9 @@
 "use strict";
 
-const APPLICATION = require('./constants/application');
 const express = require('express');
 const bodyParser = require('body-parser');
 const webSocket = require('ws');
+const APPLICATION = require('./constants/application');
 const CONTENT = require('./constants/content');
 const actions = require('./actions');
 const sockets = new Map();
@@ -70,6 +70,7 @@ const initMessageHandler = ws => {
                 break;
             case 'CHAIN':
                 const messageChain = message.value.chain;
+                //Todo: Implement more detailed comparison: time, difficulty, index, hash
                 const newChain = messageChain.length > mainChain.length ? messageChain : null;
 
                 if (newChain) {
@@ -79,7 +80,7 @@ const initMessageHandler = ws => {
 
                 break;
             default:
-                console.log('no handling here');
+                console.log('Unhandled message');
         }
     });
 };
