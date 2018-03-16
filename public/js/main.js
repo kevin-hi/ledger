@@ -16,7 +16,7 @@ const Module = {
         CONNECTION: void 0,
         START_TIME: new Date(),
         BLOCKS_FOUND: [],
-        BLOCKS_GENERATED: []
+        BLOCKS_GENERATED: 0
     },
     initWebSocket () {
         window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -25,8 +25,7 @@ const Module = {
         const wsUri = location.protocol === 'https:' ? 'wss:' : 'ws:' + '//' + location.hostname + ':8000';
 
         Module.GLOBALS.CONNECTION = new WebSocket(wsUri);
-
-        Module.GLOBALS.CONNECTION.onopen = function () {
+        Module.GLOBALS.CONNECTION.onopen = () => {
             Module.GLOBALS.CONNECTION.send(JSON.stringify({
                 type: 'USER_AGENT',
                 value: navigator.userAgent
@@ -34,9 +33,7 @@ const Module = {
             Module.mineBlock();
         };
 
-        Module.GLOBALS.CONNECTION.onerror = function (error) {
-            console.log(error);
-        };
+        Module.GLOBALS.CONNECTION.onerror = error => console.log(error);
 
         Module.initMessageHandler(Module.GLOBALS.CONNECTION);
     },
@@ -49,10 +46,10 @@ const Module = {
                 console.log('This doesn\'t look like a valid JSON: ', message.data);
                 return;
             }
-            Module.messageHandler(parsedMessage);
+            Module.handleMessage(parsedMessage);
         };
     },
-    messageHandler: parsedMessage => {
+    handleMessage: parsedMessage => {
         switch(parsedMessage.type) {
             case 'NODES':
                 Module.DOM.CLIENTS.innerHTML = Module.generateLiList(parsedMessage.addresses);
@@ -72,7 +69,7 @@ const Module = {
     createBlock (data = {data: navigator.userAgent}) {
         const newBlock = Module.GLOBALS.MAIN_CHAIN.createNewBlock(data);
         const doesNewBlockMatchDifficulty = Module.hashMatchesDifficulty(newBlock.hash, newBlock.difficulty);
-        Module.GLOBALS.BLOCKS_GENERATED.push(true);
+        Module.GLOBALS.BLOCKS_GENERATED += 1;
         document.getElementById('block').innerHTML = newBlock.hash;
 
         if (doesNewBlockMatchDifficulty) {
@@ -81,6 +78,7 @@ const Module = {
             Module.DOM.FOUND.innerHTML = Module.generateLiList(Module.GLOBALS.BLOCKS_FOUND);
             Module.DOM.FOUND_COUNT.innerHTML = `Blocks found: ${Module.GLOBALS.BLOCKS_FOUND.length || 0}`;
             Module.DOM.DIFFICULTY.innerHTML = `Epoch: ${newBlock.difficulty}`;
+
             console.log('Valid block found! %s', newBlock.hash);
             Module.GLOBALS.CONNECTION.send(JSON.stringify({
                 type: 'CHAIN',
@@ -91,7 +89,7 @@ const Module = {
         const endTime = new Date();
         const sessionDuration = (endTime - Module.GLOBALS.START_TIME)/1000;
 
-        Module.DOM.HASH_RATE.innerHTML = `All Hash Rate (h/s): ${(Module.GLOBALS.BLOCKS_GENERATED.length/sessionDuration).toFixed(2)}`;
+        Module.DOM.HASH_RATE.innerHTML = `All Hash Rate (h/s): ${(Module.GLOBALS.BLOCKS_GENERATED/sessionDuration).toFixed(2)}`;
         Module.DOM.FOUND_RATE.innerHTML = `Valid Hash Rate (h/s): ${(Module.GLOBALS.BLOCKS_FOUND.length/sessionDuration).toFixed(2)}`;
 
     },
