@@ -17,7 +17,7 @@ class Chain {
         newBlock.index = lastBlock.index + 1;
         newBlock.previousHash = lastBlock.hash;
         newBlock.timestamp = new Date();
-        newBlock.difficulty = parseInt(lastBlock.index / 50);
+        newBlock.difficulty = Number(lastBlock.index / 50);
         newBlock.hash = Module.calculateHash(newBlock);
         return newBlock;
     }
