@@ -68,7 +68,7 @@ const Module = {
 
     },
     generateLiList: data => data.map(item => `<li>${item}</li>`).join(''),
-    mineBlock: () => setInterval(() => Module.createBlock(), 10),
+    mineBlock: () => setInterval(() => Module.createBlock(), 0),
     createBlock (data = {data: navigator.userAgent}) {
         const newBlock = Module.GLOBALS.MAIN_CHAIN.createNewBlock(data);
         const doesNewBlockMatchDifficulty = Module.hashMatchesDifficulty(newBlock.hash, newBlock.difficulty);
