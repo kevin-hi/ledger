@@ -1,0 +1,28 @@
+{
+  "name": "kevinouyang_csi385project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "block.js",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "crypto-js": "3.1.9-1",
+    "ejs": "2.5.7",
+    "express": "4.16.2",
+    "ws": "5.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node node.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nluck/KevinOuyang_CSI385Project.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nluck/KevinOuyang_CSI385Project/issues"
+  },
+  "homepage": "https://github.com/nluck/KevinOuyang_CSI385Project#readme"
+}

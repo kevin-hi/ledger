@@ -1,0 +1,3 @@
+module.exports = {
+    GENESIS_BLOCK_DESCRIPTION: 'GENESIS BLOCK'
+};
