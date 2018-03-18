@@ -10,13 +10,15 @@ const Module = {
         DIFFICULTY: document.getElementById('epoch'),
         HASH_RATE: document.getElementById('hashRate'),
         FOUND_RATE: document.getElementById('foundRate'),
+        TOGGLE: document.getElementById('toggle')
     },
     GLOBALS: {
         MAIN_CHAIN: new Chain(),
         CONNECTION: void 0,
         START_TIME: new Date(),
         BLOCKS_FOUND: [],
-        BLOCKS_GENERATED: 0
+        BLOCKS_GENERATED: 0,
+        BLOCK_LOOP: null
     },
     initWebSocket () {
         window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -30,7 +32,7 @@ const Module = {
                 type: 'USER_AGENT',
                 value: navigator.userAgent
             }));
-            Module.mineBlock();
+            //Entry point to automatically start mining
         };
 
         Module.GLOBALS.CONNECTION.onerror = error => console.log(error);
@@ -65,7 +67,20 @@ const Module = {
 
     },
     generateLiList: data => data.map(item => `<li>${item}</li>`).join(''),
-    mineBlock: () => setInterval(() => Module.createBlock(), 0),
+    toggleMining: () => {
+        if (Module.GLOBALS.CONNECTION.readyState === 1) {
+            if (Module.GLOBALS.BLOCK_LOOP) {
+                clearInterval(Module.GLOBALS.BLOCK_LOOP);
+                Module.GLOBALS.BLOCK_LOOP = null;
+                Module.DOM.TOGGLE.innerHTML = 'Start';
+            } else {
+                Module.GLOBALS.BLOCK_LOOP = setInterval(() => Module.createBlock(), 0)
+                Module.DOM.TOGGLE.innerHTML = 'Stop';
+            }
+        } else {
+            alert('WebSocket connection yet to be established.');
+        }
+    },
     createBlock (data = {data: navigator.userAgent}) {
         const newBlock = Module.GLOBALS.MAIN_CHAIN.createNewBlock(data);
         const doesNewBlockMatchDifficulty = Module.hashMatchesDifficulty(newBlock.hash, newBlock.difficulty);
@@ -103,4 +118,6 @@ const Module = {
 };
 
 Module.initiate();
+
+
 
